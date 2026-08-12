@@ -52,3 +52,14 @@ def test_publish_bar_calls_xadd_with_correct_stream_and_fields() -> None:
                 "volume": "15000.0",
             },
         )
+
+
+def test_clear_stream_calls_delete_with_correct_stream_name() -> None:
+    with patch("services.market_data.redis_publisher.redis.Redis") as mock_redis_cls:
+        mock_client = MagicMock()
+        mock_redis_cls.return_value = mock_client
+
+        publisher = RedisPublisher(stream_name="market-data:AAPL:15min")
+        publisher.clear_stream()
+
+        mock_client.delete.assert_called_once_with("market-data:AAPL:15min")

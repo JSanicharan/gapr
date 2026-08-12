@@ -24,6 +24,9 @@ class RedisPublisher:
         self.stream_name = stream_name
         self.client = redis.Redis(host=host, port=port)
 
+    def clear_stream(self) -> None:
+        self.client.delete(self.stream_name)
+
     def publish_bar(self, bar: Bar) -> None:
         fields = bar_to_stream_fields(bar)
         self.client.xadd(self.stream_name, fields)
